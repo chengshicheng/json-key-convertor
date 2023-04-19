@@ -1,4 +1,4 @@
-package jsonkeyconvertor
+package convertor
 
 import (
 	"reflect"

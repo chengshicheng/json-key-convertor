@@ -71,11 +71,10 @@ func TestGetConvertFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotF, gotOk := GetConvertFunc(tt.args.name)
-			a := assert.New(t)
-			a.EqualValues(gotOk, tt.wantOk)
+			assert.Equal(t, gotOk, tt.wantOk)
 			gotFName := runtime.FuncForPC(reflect.ValueOf(gotF).Pointer()).Name()
 			wantFName := runtime.FuncForPC(reflect.ValueOf(tt.wantF).Pointer()).Name()
-			a.Equal(gotFName, wantFName)
+			assert.Equal(t, gotFName, wantFName)
 		})
 	}
 }
@@ -128,7 +127,7 @@ func TestConvertKey_Invalid(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ConvertKey([]byte(tt.input.obj), tt.input.name)
+			_, err := ConvertKey([]byte(tt.input.obj), tt.input.name)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ConvertKey() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -140,10 +139,6 @@ func TestConvertKey_Invalid(t *testing.T) {
 				return
 
 			}
-			println(string(got))
-			// if !reflect.DeepEqual(got, tt.want) {
-			// 	t.Errorf("ConvertKey() = %v, want %v", got, tt.want)
-			// }
 		})
 	}
 }
@@ -174,6 +169,7 @@ func TestRegisterConvertFunc_Panic(t *testing.T) {
 
 func TestConvertKey_Array(t *testing.T) {
 	data := []struct {
+		name   string
 		input  string
 		output string
 	}{
@@ -186,7 +182,7 @@ func TestConvertKey_Array(t *testing.T) {
 	}
 
 	for _, tt := range data {
-		t.Run(tt.input, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			result, err := ConvertKey([]byte(tt.input), Upper)
 			if err != nil {
 				t.Errorf("convert error:%s", err.Error())
@@ -200,6 +196,7 @@ func TestConvertKey_Array(t *testing.T) {
 
 func TestConvertKey_Object(t *testing.T) {
 	data := []struct {
+		name   string
 		input  string
 		output string
 	}{
@@ -212,13 +209,12 @@ func TestConvertKey_Object(t *testing.T) {
 	}
 
 	for _, tt := range data {
-		t.Run(tt.input, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			result, err := ConvertKey([]byte(tt.input), Upper)
 			if err != nil {
 				t.Errorf("convert error:%s", err.Error())
 			}
-			a := assert.New(t)
-			a.JSONEq(tt.output, string(result))
+			assert.JSONEq(t, tt.output, string(result))
 		})
 	}
 
@@ -226,6 +222,7 @@ func TestConvertKey_Object(t *testing.T) {
 
 func TestConvertKey_ArrayObject(t *testing.T) {
 	data := []struct {
+		name   string
 		input  string
 		output string
 	}{
@@ -245,13 +242,12 @@ func TestConvertKey_ArrayObject(t *testing.T) {
 	}
 
 	for _, tt := range data {
-		t.Run(tt.input, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
 			result, err := ConvertKey([]byte(tt.input), Upper)
 			if err != nil {
 				t.Errorf("convert error:%s", err.Error())
 			}
-			a := assert.New(t)
-			a.JSONEq(tt.output, string(result))
+			assert.JSONEq(t, tt.output, string(result))
 		})
 	}
 }

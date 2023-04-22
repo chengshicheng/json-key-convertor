@@ -30,8 +30,9 @@ import (
 	convertor "github.com/chengshicheng/json-key-convertor"
 )
 
+const jsonStr = `{"name":{"first_name":"Janet","last_name":"Prichard"},"age":47}`
+
 func main() {
-	const jsonStr = `{"name":{"first_name":"Janet","last_name":"Prichard"},"age":47}`
 	value, err := convertor.ConvertKey([]byte(jsonStr), convertor.Camel)
 	if err != nil {
 		println(err.Error())
@@ -49,6 +50,8 @@ import (
 	convertor "github.com/chengshicheng/json-key-convertor"
 )
 
+const jsonStr = `{"name":{"first_name":"Janet","last_name":"Prichard"},"age":47}`
+
 func myPrefixFunc(s string) string {
 	return "my_" + s
 }
@@ -56,7 +59,6 @@ func myPrefixFunc(s string) string {
 func main() {
 	// register convert function
 	convertor.RegisterConvertFunc("myprefix", myPrefixFunc)
-	const jsonStr = `{"name":{"first_name":"Janet","last_name":"Prichard"},"age":47}`
 	value, err := convertor.ConvertKey([]byte(jsonStr), "myprefix")
 	if err != nil {
 		println(err.Error())

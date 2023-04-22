@@ -1,4 +1,5 @@
 # json-key-convertor
+![workflow](https://github.com/chengshicheng/json-key-convertor/actions/workflows/go.yml/badge.svg)
 [![Go Report Card](https://goreportcard.com/badge/github.com/chengshicheng/json-key-convertor)](https://goreportcard.com/report/github.com/chengshicheng/json-key-convertor)
 [![Go doc](https://img.shields.io/badge/go.dev-reference-brightgreen?logo=go&logoColor=white&style=flat)](https://pkg.go.dev/github.com/chengshicheng/json-key-convertor)
 [![codecov](https://codecov.io/gh/chengshicheng/json-key-convertor/branch/main/graph/badge.svg?token=SIOQNMM823)](https://codecov.io/gh/chengshicheng/json-key-convertor)

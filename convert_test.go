@@ -8,13 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConvertKey_InvalidInput(t *testing.T) {
-	input := []byte(`{"foo_bar": "baz",`)
-	_, err := ConvertKey(input, Upper)
-	a := assert.New(t)
-	a.EqualError(err, "invaild json")
-}
-
 func TestConvertFunc(t *testing.T) {
 	// init test data
 	type Input struct {
@@ -52,7 +45,6 @@ func TestConvertFunc(t *testing.T) {
 				t.Errorf("%s func not register", tt.input.convertName)
 			}
 			result := f(tt.input.InputStr)
-			// 判断结果是否符合期望
 			if result != tt.output {
 				t.Errorf("expected %s, got %s", tt.output, result)
 			}
@@ -119,14 +111,65 @@ func TestRegisterConvertFunc(t *testing.T) {
 	}
 }
 
-func TestRegisterRepeatConvertFunc(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("The code did not panic")
-		}
-	}()
-	RegisterConvertFunc("reg1", func(s string) string { return s })
-	RegisterConvertFunc("reg1", func(s string) string { return s })
+func TestConvertKey_Invalid(t *testing.T) {
+	type Input struct {
+		obj  string
+		name string
+	}
+	tests := []struct {
+		name    string
+		input   Input
+		want    string
+		wantErr bool
+	}{
+		{name: "invaild_json", input: Input{obj: `{"a":1,"b":}`, name: Upper}, want: "invaild json", wantErr: true},
+		{name: "empty_name", input: Input{obj: `{"a":1}`, name: ""}, want: `{"A":1}`, wantErr: false},
+		{name: "not_exist_name", input: Input{obj: `{"a":1}`, name: "abc"}, want: "convert function not registered, convertName:abc", wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ConvertKey([]byte(tt.input.obj), tt.input.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ConvertKey() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if tt.wantErr {
+				if err.Error() != string(tt.want) {
+					t.Errorf("ConvertKey() error = %v, want %v", err, tt.want)
+				}
+				return
+
+			}
+			println(string(got))
+			// if !reflect.DeepEqual(got, tt.want) {
+			// 	t.Errorf("ConvertKey() = %v, want %v", got, tt.want)
+			// }
+		})
+	}
+}
+
+func TestRegisterConvertFunc_Panic(t *testing.T) {
+	type Input struct {
+		name string
+		f    func(string) string
+	}
+	tests := []struct {
+		name  string
+		input Input
+	}{
+		{name: "register_nil", input: Input{name: "empty_name", f: nil}},
+		{name: "register_repeat", input: Input{name: Upper, f: func(s string) string { return s }}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer func() {
+				if r := recover(); r == nil {
+					t.Errorf("The code did not panic")
+				}
+			}()
+			RegisterConvertFunc(tt.input.name, tt.input.f)
+		})
+	}
 }
 
 func TestConvertKey_Array(t *testing.T) {

@@ -1,4 +1,8 @@
 # json-key-convertor
+[![Go Report Card](https://goreportcard.com/badge/github.com/chengshicheng/json-key-convertor)](https://goreportcard.com/report/github.com/chengshicheng/json-key-convertor)
+[![Go doc](https://img.shields.io/badge/go.dev-reference-brightgreen?logo=go&logoColor=white&style=flat)](https://pkg.go.dev/github.com/chengshicheng/json-key-convertor)
+[![codecov](https://codecov.io/gh/chengshicheng/json-key-convertor/branch/main/graph/badge.svg?token=SIOQNMM823)](https://codecov.io/gh/chengshicheng/json-key-convertor)
+
 json-key-convertor is a Go package, it provides a simple way to converts the format of all keys in dynamic JSON to another format, such as case and underscore
 
 
